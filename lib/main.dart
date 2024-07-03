@@ -13,7 +13,7 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(connectionProvider);
+    ref.read(connectionServiceProvider('serviceUuid'));
     ref.read(listenAndTriggerProvider);
 
     final status = ref.watch(connectionStatusStringProvider);
@@ -21,19 +21,6 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(child: Text(status)),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     ref.read(connectionProvider.notifier).triggerConnect();
-        //   },
-        //   child: SizedBox(
-        //     height: 50,
-        //     width: 100,
-        //     child: Padding(
-        //       padding: const EdgeInsets.all(8.0),
-        //       child: Text('trigger connect'),
-        //     ),
-        //   ),
-        // ),
       ),
     );
   }

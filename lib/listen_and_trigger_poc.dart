@@ -13,7 +13,7 @@ class ListenAndTrigger {
 
   ListenAndTrigger(this.ref) {
     print('Listener initialised!');
-    ref.listen(connectionProvider, (p, n) {
+    ref.listen(connectionServiceProvider('serviceUuid'), (p, n) {
       print('connection provider listener triggered. Emitted value: ${n.name}');
       final _ = switch (n) {
         ConnectionState.scanning => onScan(ConnectionState.scanning),
@@ -32,7 +32,7 @@ class ListenAndTrigger {
   onDisconnect(ConnectionState connectionState) {
     print('on disconnect');
     // when disconnect is emitted, we will reinitalise the stream
-    ref.read(connectionProvider.notifier).triggerConnect();
+    ref.read(connectionServiceProvider('serviceUuid').notifier).triggerConnect();
     ref.read(connectionStatusStringProvider.notifier).setStrFromState(connectionState);
   }
 
@@ -49,6 +49,7 @@ class ListenAndTrigger {
 
 @Riverpod(keepAlive: true)
 ListenAndTrigger listenAndTrigger(Ref ref) {
+  // ref.watch(connectionServiceProvider('asdasdas')); // if you uncomment this line it will break!
   return ListenAndTrigger(ref);
 }
 
@@ -74,10 +75,10 @@ Stream<String> mockScanner(Ref ref) {
 
 // listens to the scanning stream and modifies its internal state
 @Riverpod(keepAlive: true)
-class Connection extends _$Connection {
+class ConnectionService extends _$ConnectionService {
   ProviderSubscription<AsyncValue<String>>? scanSubscription;
   @override
-  ConnectionState build() {
+  ConnectionState build(serviceUuid) {
     triggerConnect();
     return ConnectionState.scanning;
   }
